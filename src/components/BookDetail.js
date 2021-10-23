@@ -1,10 +1,10 @@
 import React from "react";
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import { useHistory } from "react-router-dom";
 //Redux
 import { useSelector } from "react-redux";
 import { getCover } from "../api";
+import { v4 as uuidv4 } from "uuid"
 
 
 const BookDetail = () => {
@@ -18,25 +18,36 @@ const BookDetail = () => {
         }
     }
     //data
-    const { book } = useSelector(state => state.bookDetail)
+    const { book, isLoading, authors } = useSelector(state => state.bookDetail)
     return (
-        <div>
+        <>
+            {!isLoading && (
                 <CardShadow className="shadow" onClick={exitDetailHandler}>
                     <Detail>
-                        <h1>Hello There</h1>
-                        <div>
-                            {book.covers.map(cover => (
-                                <img src={getCover(cover, "M")} key={cover} alt="Other Book Covers" />
-                            ))}
-                        </div>
+                        <h1>{book.title}</h1>
+                        {authors.map(author => (
+                            <h3 key={uuidv4()}>{author.name}</h3>
+                        ))}
+                            {book.description ? (
+                                <Description>
+                                    <p>{book.description.value ? book.description.value : book.description}</p>
+                                </Description>
+                            ) : (<p><i>No Description Available</i></p>)}
+                        {book.covers && (
+                            <div className="picture">
+                                {book.covers.map(cover => (
+                                    <img src={getCover(cover, "M")} key={cover} alt="Other Book Covers" />
+                                ))}
+                            </div>
+                        )}
                     </Detail>
                 </CardShadow>
-            
-        </div>
+            )}
+        </>
     )
 }
 
-const CardShadow = styled(motion.div)`
+const CardShadow = styled.div`
     width: 100%;
     min-height: 100vh;
     overflow-y: scroll;
@@ -55,49 +66,26 @@ const CardShadow = styled(motion.div)`
     }
 `
 
-const Detail = styled(motion.div)`
-    width: 80%;
+const Detail = styled.div`
+    width: 60%;
     border-radius: 1rem;
     padding: 2rem 5rem;
     background: white;
     position: absolute;
-    left: 10%;
+    margin-top: 5rem;
+    left: 20%;
     color: black;
     z-index: 10;
-
-`
-
-const Stats = styled(motion.div)`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    img {
-        width: 1.5rem;
-        height: 1.5rem;
-        display: inline;
+    h3{
+        padding-top: 1em;
+    }
+    .picture{
+        display: flex;
+        justify-content: center;
     }
 `
-
-const Info = styled(motion.div)`
-    text-align: center;
-`
-const Platforms = styled(motion.div)`
-    display: flex;
-    justify-content: space-evenly;
-    img {
-        margin-left: 3rem;
-    }
-`
-
-const Media = styled(motion.div)`
-    margin-top: 5rem;
-    img {
-        width: 100%;
-    }
-`
-
-const Description = styled(motion.div)`
-    margin: 5rem 0rem;
+const Description = styled.div`
+    margin: 2rem 0rem;
 `
 
 export default BookDetail;

@@ -1,5 +1,6 @@
 const initState = {
-    searched: []
+    searched: [],
+    searchIsLoading: false,
 }
 
 const booksReducer = (state=initState, action) => {
@@ -7,7 +8,18 @@ const booksReducer = (state=initState, action) => {
         case "FETCH_SEARCHED":
             return {
                 ...state,
-                searched: action.payload.searched
+                searched: action.payload.searched,
+                searchIsLoading: false,
+            }
+        case "CLEAR_SEARCHED":
+            return {
+                ...state,
+                searched: [],
+            }
+        case "SEARCH_LOADING":
+            return {
+                ...state,
+                searchIsLoading: true,
             }
         default: 
             return {...state}
